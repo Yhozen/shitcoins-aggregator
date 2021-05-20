@@ -1,14 +1,41 @@
-import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import * as React from "react";
+import { StyleSheet, Button } from "react-native";
+import { useForm } from "react-hook-form";
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import EditScreenInfo from "../components/EditScreenInfo";
+import { Text, View } from "../components/Themed";
+import { useWeb3 } from "../hooks/useWeb3";
+import { ControlledTextInput } from "../components/ControlledTextInput";
+
+type FormData = {
+  address: string;
+};
 
 export default function TabOneScreen() {
+  const { control, handleSubmit } = useForm<FormData>();
+  const [balance, setBalance] = React.useState("Hola");
+  const web3 = useWeb3();
+
+  const onSubmit = handleSubmit(({ address }) =>
+    web3.eth
+      .getBalance(address)
+      .then((val) => setBalance(web3.utils.fromWei(val)))
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text style={styles.title}>{balance} balances</Text>
+
+      <ControlledTextInput name="address" control={control} />
+
+      <Button title="Submit" onPress={onSubmit} />
+
+      <View
+        style={styles.separator}
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
       <EditScreenInfo path="/screens/TabOneScreen.tsx" />
     </View>
   );
@@ -17,16 +44,16 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });
