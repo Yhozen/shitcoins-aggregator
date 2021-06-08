@@ -9,14 +9,35 @@ import { ControlledTextInput } from "../components/ControlledTextInput";
 
 type FormData = {
   address: string;
+  amount: number;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  input: {
+    backgroundColor: "red",
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: "80%",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
 
 export default function TabOneScreen() {
   const { control, handleSubmit } = useForm<FormData>();
   const [balance, setBalance] = React.useState("Hola");
   const web3 = useWeb3();
 
-  const onSubmit = handleSubmit(({ address }) =>
+  const onSubmit = handleSubmit(({ address, amount }) =>
     web3.eth
       .getBalance(address)
       .then((val) => setBalance(web3.utils.fromWei(val)))
@@ -27,7 +48,11 @@ export default function TabOneScreen() {
       <Text style={styles.title}>Tab One</Text>
       <Text style={styles.title}>{balance} balances</Text>
 
-      <ControlledTextInput name="address" control={control} />
+      <ControlledTextInput
+        style={styles.input}
+        name="address"
+        control={control}
+      />
 
       <Button title="Submit" onPress={onSubmit} />
 
@@ -40,20 +65,3 @@ export default function TabOneScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
