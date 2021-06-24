@@ -11,8 +11,11 @@ import IntroSlider from "./components/tutorial/IntroSilder";
 import { useStore } from "./hooks/useStore";
 
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Platform } from "react-native";
 
 const queryClient = new QueryClient();
+
+const isBrowser = Platform.OS === "web";
 
 export default function App() {
   const { isDoneIntro, setIsDoneIntro } = useStore();
@@ -22,7 +25,7 @@ export default function App() {
   if (!isLoadingComplete) {
     return null;
   } else {
-    if (isDoneIntro) {
+    if (isDoneIntro || isBrowser) {
       return (
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider>
