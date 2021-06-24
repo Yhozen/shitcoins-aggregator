@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const { toChecksumAddress } = require("ethereum-checksum-address");
+
 const baseURL = "https://api.bscscan.com/api";
 
 const API_KEY = "3836FRU9MU9Y6A3RANDDRKGFM5K3T9TB53";
@@ -42,6 +44,7 @@ export const getERC20Balance = async (
   return response.data?.result;
 };
 
-export const getERC20Logo = async (contractAddress: string) => {
-  return `https://assets.trustwalletapp.com/blockchains/smartchain/assets/${contractAddress}/logo.png`;
-};
+export const getERC20Logo = (contractAddress: string) =>
+  `https://assets.trustwalletapp.com/blockchains/smartchain/assets/${toChecksumAddress(
+    contractAddress
+  )}/logo.png`;

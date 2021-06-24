@@ -4,13 +4,11 @@ import { StyleSheet, FlatList, ListRenderItem } from "react-native";
 import { Text, View } from "../components/Themed";
 import { useWeb3 } from "../hooks/useWeb3";
 import { useQuery } from "react-query";
-import { getERC20TXs } from "../services/bscscan";
+import { getERC20Logo, getERC20TXs } from "../services/bscscan";
 import { uniqBy } from "ramda";
 import pMap from "p-map";
 import type Web3 from "web3";
 import ERC20ABI from "../constants/ERC20.abi";
-
-const { toChecksumAddress } = require("ethereum-checksum-address");
 
 type DataType = {
   image: string;
@@ -20,11 +18,6 @@ type DataType = {
   symbol: string;
   name: string;
 };
-
-const getImage = (address: string) =>
-  `https://assets.trustwalletapp.com/blockchains/smartchain/assets/${toChecksumAddress(
-    address
-  )}/logo.png`;
 
 const getTokenInfo = async (
   address: string,
@@ -57,7 +50,7 @@ const test = async (web3: Web3, address: string) => {
   );
   const info = await pMap(tokens, async (token) => {
     const values = await getTokenInfo(address, token.contractAddress, web3);
-    return { ...values, image: getImage(values.address) };
+    return { ...values, image: getERC20Logo(values.address) };
   });
 
   return info
