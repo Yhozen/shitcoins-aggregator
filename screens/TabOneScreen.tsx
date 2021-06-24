@@ -8,6 +8,11 @@ import { Text, View } from "../components/Themed";
 import { useWeb3 } from "../hooks/useWeb3";
 import { ControlledTextInput } from "../components/ControlledTextInput";
 import { useQuery } from "react-query";
+import { getERC20TXs } from "../services/bscscan";
+import { uniqBy } from "ramda";
+import pMap from "p-map";
+import type Web3 from "web3";
+import ERC20ABI from "../constants/ERC20.abi";
 
 type FormData = {
   address: string;
@@ -38,9 +43,36 @@ type DataType = typeof DATA[number];
 
 const sleep = (ms: number) => new Promise((res, rej) => setTimeout(res, ms));
 
-const test = async () => {
-  await sleep(2000);
-  return "test";
+const getBalances = async (
+  address: string,
+  contractAdress: string,
+  web3: Web3
+) => {
+  const contract = new web3.eth.Contract(ERC20ABI as any, contractAdress);
+
+  const [balance, decimals] = await Promise.all([
+    contract.methods.balanceOf(address).call(),
+    contract.methods.decimals().call(),
+  ]);
+
+  console.log(balance);
+  return { balance: Number(balance), decimals: Number(decimals) };
+};
+
+const test = async (web3: Web3) => {
+  const txs = await getERC20TXs("0x658544eD85344c3F2cb911398939a8C8F00249c6");
+  const tokens: Record<string, string>[] = uniqBy(
+    (val: Record<string, string>) => val.contractAddress,
+    txs
+  );
+  const balances = await pMap(tokens, (token) =>
+    getBalances(
+      "0x658544eD85344c3F2cb911398939a8C8F00249c6",
+      token.contractAddress,
+      web3
+    )
+  );
+  return balances.filter(({ balance }) => balance !== 0);
 };
 
 export default function TabOneScreen() {
@@ -49,7 +81,7 @@ export default function TabOneScreen() {
   const web3 = useWeb3();
 
   // Queries
-  const { isLoading, data } = useQuery("todos", test);
+  const { isLoading, data } = useQuery("todo", () => test(web3));
 
   const renderItem: ListRenderItem<DataType> = React.useCallback(({ item }) => {
     return (
@@ -75,7 +107,7 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
       <Text style={styles.title}>{balance} balances</Text>
-      <Text>{`desde api: ${data}`}</Text>
+      <Text>{`desde api: ${JSON.stringify(data)}`}</Text>
       <ControlledTextInput
         style={styles.input}
         name="address"
