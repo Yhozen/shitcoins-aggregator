@@ -14,50 +14,48 @@ import pMap from "p-map";
 import type Web3 from "web3";
 import ERC20ABI from "../constants/ERC20.abi";
 
+const { toChecksumAddress } = require("ethereum-checksum-address");
+
 type FormData = {
   address: string;
   amount: number;
 };
 
-const DATA = [
-  {
-    image: "https://bscscan.com//token/images/safemarscrypto_32.png",
-    name: "Bitcoin",
-    symbol: "BTC",
-    address: "1",
-  },
-  {
-    image: "https://bscscan.com//token/images/safemarscrypto_32.png",
-    name: "Binance coin",
-    symbol: "BNB",
-    address: "2",
-  },
-  {
-    image: "https://bscscan.com//token/images/safemarscrypto_32.png",
-    name: "Ethereum",
-    symbol: "ETH",
-    address: "3",
-  },
-];
+type DataType = {
+  image: string;
+  balance: number;
+  decimals: number;
+  address: string;
+  symbol: string;
+  name: string;
+};
 
-type DataType = typeof DATA[number];
+const getImage = (address: string) =>
+  `https://assets.trustwalletapp.com/blockchains/smartchain/assets/${toChecksumAddress(
+    address
+  )}/logo.png`;
 
-const sleep = (ms: number) => new Promise((res, rej) => setTimeout(res, ms));
-
-const getBalances = async (
+const getTokenInfo = async (
   address: string,
   contractAdress: string,
   web3: Web3
 ) => {
   const contract = new web3.eth.Contract(ERC20ABI as any, contractAdress);
 
-  const [balance, decimals] = await Promise.all([
+  const [balance, decimals, name, symbol] = await Promise.all([
     contract.methods.balanceOf(address).call(),
     contract.methods.decimals().call(),
+    contract.methods.name().call() as string,
+    contract.methods.symbol().call() as string,
   ]);
 
-  console.log(balance);
-  return { balance: Number(balance), decimals: Number(decimals) };
+  return {
+    balance: Number(balance),
+    decimals: Number(decimals),
+    address: contractAdress,
+    symbol,
+    name,
+  };
 };
 
 const test = async (web3: Web3) => {
@@ -66,14 +64,18 @@ const test = async (web3: Web3) => {
     (val: Record<string, string>) => val.contractAddress,
     txs
   );
-  const balances = await pMap(tokens, (token) =>
-    getBalances(
+  const info = await pMap(tokens, async (token) => {
+    const values = await getTokenInfo(
       "0x658544eD85344c3F2cb911398939a8C8F00249c6",
       token.contractAddress,
       web3
-    )
-  );
-  return balances.filter(({ balance }) => balance !== 0);
+    );
+    return { ...values, image: getImage(values.address) };
+  });
+
+  return info
+    .filter(({ balance }) => balance !== 0)
+    .sort(({ balance }) => balance);
 };
 
 export default function TabOneScreen() {
@@ -108,7 +110,6 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
       <Text style={styles.title}>{balance} balances</Text>
-      <Text>{`desde api: ${JSON.stringify(data)}`}</Text>
       <ControlledTextInput
         style={styles.input}
         name="address"
@@ -119,7 +120,7 @@ export default function TabOneScreen() {
       <FlatList<DataType>
         renderItem={renderItem}
         keyExtractor={(item) => item.address}
-        data={DATA}
+        data={data}
       />
 
       <View
