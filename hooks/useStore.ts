@@ -7,6 +7,9 @@ type Store = {
   web3: Web3;
   isDoneIntro: boolean;
   setIsDoneIntro: () => void;
+  address?: string;
+  setAddress: (address: string) => void;
+  resetAddress: () => void;
 };
 
 const web3 = new Web3("https://bsc-dataseed1.binance.org:443");
@@ -29,6 +32,8 @@ export const useStore = create<Store>(
       web3: web3,
       isDoneIntro: false,
       setIsDoneIntro: () => set({ isDoneIntro: true }),
+      setAddress: (address: string) => set({ address }),
+      resetAddress: () => set({ address: undefined }),
     }),
     {
       name: "app", // unique name
