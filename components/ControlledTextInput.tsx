@@ -1,6 +1,6 @@
 import React from "react";
 import { Control, Path, useController } from "react-hook-form";
-import { TextInput, TextInputProps } from "react-native";
+import { TextInput, TextInputProps } from "./Themed";
 
 type ControlledTextInputProps<T> = TextInputProps & {
   name: Path<T>;

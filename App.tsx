@@ -11,7 +11,7 @@ import IntroSlider from "./components/tutorial/IntroSilder";
 import { useStore } from "./hooks/useStore";
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Platform } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 
 const queryClient = new QueryClient();
 
@@ -23,19 +23,19 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   if (!isLoadingComplete) {
-    return null;
-  } else {
-    if (isDoneIntro || isBrowser) {
-      return (
-        <QueryClientProvider client={queryClient}>
-          <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
-            <StatusBar />
-          </SafeAreaProvider>
-        </QueryClientProvider>
-      );
-    } else {
-      return <IntroSlider isDone={isDoneIntro} setIsDone={setIsDoneIntro} />;
-    }
+    return <ActivityIndicator size="large" />;
   }
+
+  if (isDoneIntro || isBrowser) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <Navigation colorScheme={colorScheme} />
+          <StatusBar />
+        </SafeAreaProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  return <IntroSlider isDone={isDoneIntro} setIsDone={setIsDoneIntro} />;
 }

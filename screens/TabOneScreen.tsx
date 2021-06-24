@@ -3,15 +3,22 @@ import { StyleSheet, Button } from "react-native";
 
 import { useForm } from "react-hook-form";
 
-import { Text } from "../components/Themed";
+import { Text, View } from "../components/Themed";
 import { useWeb3 } from "../hooks/useWeb3";
 import { ControlledTextInput } from "../components/ControlledTextInput";
 import { useAddress } from "../hooks/useAddress";
 import { CoinList } from "../components/CoinList";
-import { useStore } from "../hooks/useStore";
+import { isValidAddress, useStore } from "../hooks/useStore";
 import { useEffect } from "react";
 
 import styled from "styled-components/native";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+  address: yup.string().required(),
+});
 
 const Container = styled.View`
   flex: 1;
@@ -22,20 +29,25 @@ const Container = styled.View`
 
 type FormData = {
   address: string;
-  amount: number;
 };
 
 export default function TabOneScreen() {
-  const { control, handleSubmit } = useForm<FormData>();
+  const { control, handleSubmit } = useForm<FormData>({
+    resolver: yupResolver(schema),
+  });
   const [balance, setBalance] = React.useState("Hola");
   const web3 = useWeb3();
   const address = useAddress();
   const setAddress = useStore((state) => state.setAddress);
   const resetAddress = useStore((state) => state.resetAddress);
-  const onSubmit = handleSubmit(({ address }) => setAddress(address));
+  const onSubmit = handleSubmit(({ address }) => {
+    if (!isValidAddress(address)) return;
+    setAddress(address);
+  });
 
   useEffect(() => {
     if (address) {
+      if (!isValidAddress(address)) resetAddress();
       web3.eth
         .getBalance(address)
         .then((val) => setBalance(web3.utils.fromWei(val)));
@@ -43,7 +55,7 @@ export default function TabOneScreen() {
   }, [address]);
 
   return (
-    <Container>
+    <View style={styles.container}>
       {address ? (
         <>
           <Text style={styles.title}>{balance} BNB</Text>
@@ -62,7 +74,7 @@ export default function TabOneScreen() {
         </>
       )}
       {address && <Button title="Remove address" onPress={resetAddress} />}
-    </Container>
+    </View>
   );
 }
 
@@ -83,6 +95,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
     marginTop: 15,
     paddingHorizontal: 15,
+    color: "#eee",
     width: "90%",
   },
   separator: {

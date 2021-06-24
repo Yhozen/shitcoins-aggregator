@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, FlatList, ListRenderItem } from "react-native";
+import { StyleSheet, FlatList, ListRenderItem, Image } from "react-native";
 
 import { Text, View } from "../components/Themed";
 import { useWeb3 } from "../hooks/useWeb3";
@@ -72,7 +72,7 @@ export const CoinList: React.FC<CoinListProps> = ({ address }) => {
   const renderItem: ListRenderItem<DataType> = React.useCallback(({ item }) => {
     return (
       <View style={styles.coinsListContainer}>
-        <Text>{item.image}</Text>
+        <Image source={{ uri: item.image }} style={{ height: 20, width: 20 }} />
         <Text>{item.name}</Text>
         <Text>{item.symbol}</Text>
         <Text>{item.balance / (10 ^ item.decimals)}</Text>

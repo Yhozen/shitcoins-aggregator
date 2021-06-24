@@ -3,7 +3,8 @@ import create from "zustand";
 import { persist, StateStorage } from "zustand/middleware";
 import { get, set } from "idb-keyval";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import Cookies from "js-cookie";
+
+const { toChecksumAddress } = require("ethereum-checksum-address");
 
 type Store = {
   web3: Web3;
@@ -37,13 +38,27 @@ const storage: StateStorage = {
 //   },
 // };
 
+export const isValidAddress = (address: string) => {
+  try {
+    toChecksumAddress(address);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 export const useStore = create<Store>(
   persist(
     (set) => ({
       web3: web3,
       isDoneIntro: false,
       setIsDoneIntro: () => set({ isDoneIntro: true }),
-      setAddress: (address: string) => set({ address }),
+      setAddress: (address: string) =>
+        set({
+          address: isValidAddress(address)
+            ? toChecksumAddress(address)
+            : undefined,
+        }),
       resetAddress: () => set({ address: undefined }),
     }),
     {
