@@ -30,7 +30,7 @@
     "expo-web-browser": "~9.1.0",
     "idb-keyval": "^5.0.6",
     "node-libs-browser": "^2.2.1",
-    "p-map": "^5.0.0",
+    "p-map": "4.0.0",
     "ramda": "^0.27.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
