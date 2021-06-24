@@ -48,6 +48,7 @@ const test = async (web3: Web3, address: string) => {
     (val: Record<string, string>) => val.contractAddress,
     txs
   );
+
   const info = await pMap(tokens, async (token) => {
     const values = await getTokenInfo(address, token.contractAddress, web3);
     return { ...values, image: getERC20Logo(values.address) };

@@ -3,14 +3,22 @@ import { StyleSheet, Button } from "react-native";
 
 import { useForm } from "react-hook-form";
 
-import EditScreenInfo from "../components/EditScreenInfo";
-import { Text, View } from "../components/Themed";
+import { Text } from "../components/Themed";
 import { useWeb3 } from "../hooks/useWeb3";
 import { ControlledTextInput } from "../components/ControlledTextInput";
 import { useAddress } from "../hooks/useAddress";
 import { CoinList } from "../components/CoinList";
 import { useStore } from "../hooks/useStore";
 import { useEffect } from "react";
+
+import styled from "styled-components/native";
+
+const Container = styled.View`
+  flex: 1;
+  background-color: black;
+  align-items: center;
+  justify-content: center;
+`;
 
 type FormData = {
   address: string;
@@ -35,7 +43,7 @@ export default function TabOneScreen() {
   }, [address]);
 
   return (
-    <View style={styles.container}>
+    <Container>
       {address ? (
         <>
           <Text style={styles.title}>{balance} BNB</Text>
@@ -54,7 +62,7 @@ export default function TabOneScreen() {
         </>
       )}
       {address && <Button title="Remove address" onPress={resetAddress} />}
-    </View>
+    </Container>
   );
 }
 

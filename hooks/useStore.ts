@@ -1,7 +1,9 @@
 import Web3 from "web3";
 import create from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, StateStorage } from "zustand/middleware";
+import { get, set } from "idb-keyval";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// import Cookies from "js-cookie";
 
 type Store = {
   web3: Web3;
@@ -15,14 +17,23 @@ type Store = {
 const web3 = new Web3("https://bsc-dataseed1.binance.org:443");
 
 // // Custom storage object
-// const storage = {
-//   getItem: async (name: string): Promise<string | null> => {
-//     console.log(name, "has been retrieved");
-//     return (await get(name)) || null;
+const storage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    console.log(name, "has been retrieved");
+    return (await get(name)) || null;
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    console.log(name, "with value", value, "has been saved");
+    set(name, value);
+  },
+};
+
+// const cookieStorage: StateStorage = {
+//   getItem: (name: string) => {
+//     return Cookies.get(name) as string | null;
 //   },
-//   setItem: async (name: string, value: string): Promise<void> => {
-//     console.log(name, "with value", value, "has been saved");
-//     set(name, value);
+//   setItem: (name: string, value: string) => {
+//     Cookies.set(name, value);
 //   },
 // };
 
