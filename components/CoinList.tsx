@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { StyleSheet, FlatList, ListRenderItem, Image } from "react-native";
 
 import { Text, View } from "../components/Themed";

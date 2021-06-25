@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { StyleSheet, ListRenderItemInfo, Image } from "react-native";
 import AppIntroSlider from "react-native-app-intro-slider";
 import { View, Text } from "../Themed";
