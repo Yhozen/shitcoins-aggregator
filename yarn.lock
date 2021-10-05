@@ -8854,6 +8854,13 @@ react-native-app-intro-slider@^4.0.4:
   resolved "https://registry.npmjs.org/react-native-app-intro-slider/-/react-native-app-intro-slider-4.0.4.tgz"
   integrity sha512-Zkjaol6X3BbZkHUpVDj2LjdidpS6rCgKi0fx80xgGKa0pHxBRd4swWTv2bHnnvu5k1/HXwYk0mY2TbK+2jHl5w==
 
+react-native-drop-shadow@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-drop-shadow/-/react-native-drop-shadow-0.0.2.tgz#79843b95aab391d5b5faff8b6df007dfaad753e7"
+  integrity sha512-zaUCd9OwwKRK4sd6dQrl3s/W7gX43gK2XjViO60ta6oTyohUP0xcuFjO+hhgo+bNPyPgPQxkIWluaWZKnqcbhw==
+  dependencies:
+    logkitty "^0.7.1"
+
 react-native-gesture-handler@~1.10.2:
   version "1.10.3"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz"
