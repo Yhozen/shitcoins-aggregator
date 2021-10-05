@@ -16,6 +16,7 @@ import styled from "styled-components/native";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Card from "../components/Card";
 
 const schema = yup.object().shape({
   address: yup.string().required(),
@@ -57,9 +58,8 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <Container>
-        <Text>test tailwind</Text>
-      </Container>
+      <Card />
+
       {address ? (
         <>
           <Text style={styles.title}>{balance} BNB</Text>
