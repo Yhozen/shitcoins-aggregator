@@ -10,6 +10,7 @@ import { useAddress } from "../hooks/useAddress";
 import { CoinList } from "../components/CoinList";
 import { isValidAddress, useStore } from "../hooks/useStore";
 import { useEffect } from "react";
+import tailwind from "tailwind-rn";
 
 import styled from "styled-components/native";
 
@@ -21,8 +22,8 @@ const schema = yup.object().shape({
 });
 
 const Container = styled.View`
+  ${tailwind("bg-blue-200 px-3 py-1 rounded-full")};
   flex: 1;
-  background-color: black;
   align-items: center;
   justify-content: center;
 `;
@@ -56,6 +57,9 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
+      <Container>
+        <Text>test tailwind</Text>
+      </Container>
       {address ? (
         <>
           <Text style={styles.title}>{balance} BNB</Text>
