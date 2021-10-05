@@ -2,7 +2,7 @@ import React from "react";
 
 import tailwind from "tailwind-rn";
 import styled from "styled-components/native";
-import ShadowView from "../rokket-components/mixins/shadow/md";
+import ShadowView from "../rokket-components/shadow-view";
 
 const CardContainer = styled.View`
   ${tailwind("flex flex-wrap place-items-center h-screen")};
@@ -74,7 +74,7 @@ const ProfileRole = styled.Text`
 
 const Card = () => {
   return (
-    <ShadowView>
+    <ShadowView size="md">
       <CardInnerContainer>
         <CardPressable>
           <ImageCover
